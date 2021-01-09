@@ -29,7 +29,7 @@ const Row: React.FC<RowType> = ({ left, right }) => {
   }
   return (
     <div className="row mb2">
-      <div className="col-md-6">{isError(right)}</div>
+      <div className="col-md-6">{isError(left)}</div>
       <div className="col-md-6">{isError(right)}</div>
     </div>
   );

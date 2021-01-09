@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 import Header from "../Header/header";
-import RandomPlanet from "../RandomPlanet/randomPlanet";
-import ItemList from "../ItemList/itemList";
+import RandomPlanet from "../RandomPlanet/randomPlanet"
 import "./app.css";
-
 import SwapiService from "../../services/swapi";
-import Row from "../Row/row";
-import MyComponent from "./error";
-import ItemDetails from "../ItemDetails/itemDetails";
+import Planets from "../Planets/planets";
+import People from "../People/people";
+import Starships from "../Starships/starships";
+import { Route } from "react-router-dom";
 
 export type PlanetType = {
   id: number
@@ -46,84 +45,43 @@ export type ListType = {
   rotation_period?: string;
   diameter?: number;
 };
+export const  getData = new SwapiService();
+export const { getPerson, getPlanet, getStarship, getPeopleImage, getPlanetImage, getStarshipImage } = new SwapiService()
 
-const { getPerson, getPlanet, getStarship, getPeopleImage, getPlanetImage, getStarshipImage } = new SwapiService()
 
-type fieldType = 'length' | 'crew' | 'cost_in_credits' | 'eye_color' | 'height' | 'gender' | 'birth_year' | 'population' | 'diameter' | 'rotation_period'
-type DetailsPropsType = {
-  field: fieldType;
-  label: string;
-  itemDetails?: ListType;
-};
-const Details: React.FC<DetailsPropsType> = ({ itemDetails, field, label }) => {
-let itemField = itemDetails && itemDetails[field]
-
-  return (
-    <li className="list-group-item">
-      <span className="term">{label}</span>
-      <span>{itemField}</span>
-    </li>
-  );
-}
 const App = () => {
 
-  const [itemId, setItemId] = useState<number>(3);
-  const getData = new SwapiService()
+  const [itemId, setItemId] = useState<number>(2);
+   
+   
 
   const onChangeItem = (id: number) => {
     setItemId(id)
   }
-  const planets = (
-    <ItemList onChangeItem={onChangeItem} getData={getData.getAllPlanets}>
-      {(item: ListType) => (
-        <span>
-          {`${item.name}, (diameter: ${item.diameter} km, population: ${item.population})`}
-        </span>
-      )}
-    </ItemList>
-  );
-  const persons = (
-    <ItemList onChangeItem={onChangeItem} getData={getData.getAllPeople}>
-      {(item: ListType) => `${item.name}, (date of birth: ${item.birth_year}, gender: ${item.gender})`}
-    </ItemList>
-  );
-  // const person = <ItemDetails Id={3} />;
-  // const person2 = <ItemDetails Id={6} />;
-  const starships = (
-    <ItemList onChangeItem={onChangeItem} getData={getData.getAllStarShips}>
-      {(item: ListType) =>
-        `${item.name}, (lenght: ${item.length} m. crew: ${item.crew} person)`
-      }
-    </ItemList>
-  );
+
+
   return (
     <div>
       <Header />
       <RandomPlanet />
-      {/* <Row left={person} right={person2} /> */}
-      <ItemDetails Id={9} getItemData={getPerson} getImageUrl={getPeopleImage}>
-        <Details field={"eye_color"} label={"Eye color:"} />
-        <Details field={"gender"} label={"Gender:"} />
-        <Details field={"height"} label={"Height:"} />
-        <Details field={"birth_year"} label={"Birth Year:"} />
-      </ItemDetails>
-      <ItemDetails Id={7} getItemData={getPlanet} getImageUrl={getPlanetImage}>
-        <Details field={"diameter"} label={"Diameter:"} />
-        <Details field={"rotation_period"} label={"Rotation Period:"} />
-        <Details field={"population"} label={"Population:"} />
-      </ItemDetails>
-      <ItemDetails
-        Id={5}
-        getItemData={getStarship}
-        getImageUrl={getStarshipImage}>
-        <Details field={"crew"} label={"Crew:"} />
-        <Details field={'length'} label={"Length: "} />
-        <Details field={'cost_in_credits'} label={"Price:"} /> 
-      </ItemDetails>
-      <hr></hr>
-      {/* <Row left={planets} right={person} />
-      <hr />
-      <Row left={starships} right={person} /> */}
+
+      <Route
+        path="/people/"
+        render={() => <People onChangeItem={onChangeItem} id={itemId} />}
+      />
+      <Route
+        path="/starships"
+        render={() => <Starships onChangeItem={onChangeItem} id={itemId} />}
+      />
+      <Route
+        path="/planets"
+        render={() => <Planets onChangeItem={onChangeItem} id={itemId} />}
+      />
+      <Route
+        path="/"
+        exact
+        render={() => <h2 style={{textAlign: 'center', marginTop: '100px'}}>Welcome to star wars data base </h2>}
+      />
     </div>
   );
 };
