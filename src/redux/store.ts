@@ -4,6 +4,7 @@ import thunk from 'redux-thunk';
 import { itemInfoReducer } from './reducers/itemInfoReducer';
 import { listReducer } from './reducers/listReducer';
 import { randomPlanetReducer } from './reducers/randomPlanetReducer';
+
 const rootReducer = combineReducers({
   random: randomPlanetReducer,
   list:listReducer,

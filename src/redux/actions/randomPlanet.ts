@@ -21,7 +21,7 @@ export const onError = () => {
 export const getRandomPlanet = (dispatch: Dispatch) => {
      new SwapiService().getPlanet(Math.floor(Math.random() * 25 + 2))
        .then((planet) => {
-         dispatch( onRandomPlanet(planet))
+         dispatch(onRandomPlanet(planet))
     })
        .catch((error) => {
       dispatch(onError())

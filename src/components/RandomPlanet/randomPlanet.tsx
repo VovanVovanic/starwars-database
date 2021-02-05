@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getRandomPlanet } from "../../redux/actions/randomPlanet";
 import { PlanetType } from "../../redux/reducers/randomPlanetReducer";
@@ -13,6 +13,7 @@ const RandomPlanet = () => {
   const planet = useSelector<RootStateType, PlanetType>(
     (state) => state.random.planetInfo
   );
+  
   const loading = useSelector<RootStateType, boolean>(
     (state) => state.random.loading
   );
