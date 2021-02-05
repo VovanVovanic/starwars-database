@@ -1,38 +1,49 @@
 import React, {useEffect, useState } from "react";
-import { ListType } from "../App/App";
+import { useSelector } from "react-redux";
+import { ErrorBoundary } from "use-error-boundary/lib/ErrorBoundary";
+import { ListType } from "../../redux/reducers/listReducer";
+import { RootStateType } from "../../redux/store";
+import ErrorIndicator from "../ErrorIndicator/error-indicator";
+import Spinner from "../Spinner/spinner";
+
 
 import "./itemDetails.css";
 
 type ItemPropsType = {
-  Id: number;
-  getItemData: (id: number) => Promise<ListType>;
-  getImageUrl: (id: number) => string;
+  getItemData: () => void;
   children: any;
+  Id:number
 };
 
-const ItemDetails: React.FC<ItemPropsType> = ({ Id, getItemData, getImageUrl, children }) => {
-  const [itemDetails, setItemDetails] = useState<ListType>({} as ListType)
-  const [image, setImage] = useState<string | undefined>()
- 
-
+const ItemDetails: React.FC<ItemPropsType> = ({ Id, getItemData,  children }) => {
+  const itemDetails = useSelector<RootStateType, ListType>((state)=>state.item.item)
+  const image = useSelector<RootStateType, string | undefined>((state)=>state.item.item.url)
+  const loading = useSelector<RootStateType, boolean>((state)=>state.item.loading)
+  const error = useSelector<RootStateType, boolean>((state)=>state.item.error)
   useEffect(() => {
-    getItemData(Id).then((details) => setItemDetails(details));
-    setImage(getImageUrl(Id))
-  }, [Id])
+    getItemData();
+
+  }, [Id, getItemData])
+  let isLoading = loading && <Spinner />
+  let isError = error && <ErrorIndicator message='Sorry. Our network is broken' />
+
   return (
     <div className="person-details card">
-      {image !== undefined ? <img className="person-image" src={image} alt="person-img"/> : 'The image is missing'}
-
+      { error ? isError :
+     <>
+      <img className="person-image" src={image} alt="person-img" />
       <div className="card-body">
         <h4>{itemDetails.name}</h4>
         <ul className="list-group list-group-flush">
-          {
-            React.Children.map(children, (child) => {
-            return React.cloneElement(child, {itemDetails})
-          })
-          }
+          { React.Children.map(children, (child) => {
+            return React.cloneElement(child, { itemDetails });
+          })}
+          {isLoading}
         </ul>
       </div>
+      </>  
+      }
+      
     </div>
   );
 };

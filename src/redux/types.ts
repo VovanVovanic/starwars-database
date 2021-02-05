@@ -1,0 +1,6 @@
+export const CHANGE_RANDOM_PLANET = 'CHANGE_RANDOM_PLANET'
+export const RANDOM_ERROR = 'RANDOM_ERROR'
+export const LIST_ERROR = 'LIST_ERROR'
+export const GET_LIST = 'GET_LIST'
+export const GET_ITEM = 'GET_ITEM'
+export const ON_ITEM_ERROR = 'ON_ITEM_ERROR'

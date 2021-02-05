@@ -1,3 +1,4 @@
+
 export let bigError = false
 
 export default class SwapiService {
@@ -6,6 +7,7 @@ export default class SwapiService {
 
   getRes = async (url) => {
     const res = await fetch(`${this._apiBase}${url}`);
+
     if (!res.ok) {
       bigError = true;
       throw new Error(`An Error appeared. Received ${res.status}`);

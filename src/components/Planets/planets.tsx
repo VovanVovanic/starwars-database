@@ -1,5 +1,8 @@
 import React from 'react'
-import { getData, getPlanet, getPlanetImage, ListType } from '../App/App';
+import { useDispatch } from 'react-redux';
+import { getItemInfoThunk } from '../../redux/actions/itemInfo';
+import { getItemsThunk } from '../../redux/actions/items';
+import { ListType } from '../../redux/reducers/listReducer';
 import Details from '../Details/details';
 import ItemDetails from '../ItemDetails/itemDetails';
 import ItemList from '../ItemList/itemList';
@@ -11,18 +14,25 @@ export type Ptype = {
 }
 const Planets: React.FC<Ptype> = ({ onChangeItem, id }) => {
 
+  const dispatch = useDispatch();
+  const getPl = () => {
+    dispatch(getItemsThunk("planets"));
+  };
+    const getInfo = () => {
+      dispatch(getItemInfoThunk("planet", id));
+    };
   const planets = (
-    <ItemList onChangeItem={onChangeItem} getData={getData.getAllPlanets}>
+    <ItemList onChangeItem={onChangeItem} getData={getPl}>
       {(item: ListType) => (
         <span>
           {`${item.name}, (diameter: ${item.diameter} km, population: ${item.population})`}
         </span>
       )}
     </ItemList>
-  );
+  );  
   const planetDetails = (
     <ItemDetails Id={id}
-      getItemData={getPlanet} getImageUrl={getPlanetImage}>
+      getItemData={getInfo}>
       <Details field={"diameter"} label={"Diameter:"} />
       <Details field={"rotation_period"} label={"Rotation Period:"} />
       <Details field={"population"} label={"Population:"} />

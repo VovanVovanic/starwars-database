@@ -1,52 +1,38 @@
 import React, { useEffect, useState } from "react";
-import SwapiService from "../../services/swapi";
-import { PlanetType } from "../App/App";
+import { useDispatch, useSelector } from "react-redux";
+import { getRandomPlanet } from "../../redux/actions/randomPlanet";
+import { PlanetType } from "../../redux/reducers/randomPlanetReducer";
+import { RootStateType } from "../../redux/store";
 import ErrorIndicator from "../ErrorIndicator/error-indicator";
 import Spinner from "../Spinner/spinner";
 import "./randomPlanet.css";
 
-
 const RandomPlanet = () => {
-  const swapiPlanet = new SwapiService();
+  const dispatch = useDispatch();
 
-  let planetInfo = {
-    id: 0,
-    name: '',
-    population: '',
-    rotation_period: '',
-    diameter: 0,
-  };
-  const [planet, setPlanet] = useState<PlanetType>(planetInfo);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<boolean>(false);
-
-  const onPlanetLoaded = (planet: PlanetType) => {
-    setPlanet(planet);
-    setLoading(false);
-    setError(false);
-  };
-
-  const onError = () => {
-    setError(true);
-    setLoading(false);
-  };
-  const updatePlanet = () => {
-    swapiPlanet
-      .getPlanet(Math.floor(Math.random() * 25 + 2))
-      .then(onPlanetLoaded)
-      .catch(onError);
-  };
+  const planet = useSelector<RootStateType, PlanetType>(
+    (state) => state.random.planetInfo
+  );
+  const loading = useSelector<RootStateType, boolean>(
+    (state) => state.random.loading
+  );
+  const error = useSelector<RootStateType, boolean>(
+    (state) => state.random.error
+  );
 
   useEffect(() => {
-    updatePlanet();
     let interval = setInterval(() => {
-      updatePlanet();
+      dispatch(getRandomPlanet);
     }, 5000);
     return () => clearInterval(interval);
   }, []);
 
   const isPlanetLoaded = loading ? <Spinner /> : "";
-  const isError = error ? <ErrorIndicator message={'Something gonna wrong'}/> : "";
+  const isError = error ? (
+    <ErrorIndicator message={"Something gonna wrong"} />
+  ) : (
+    ""
+  );
   const content = !(loading || error) ? <PlanetView planet={planet} /> : "";
 
   return (
@@ -88,5 +74,3 @@ const PlanetView: React.FC<PlanetViewType> = ({ planet }) => {
   );
 };
 export default RandomPlanet;
-
-

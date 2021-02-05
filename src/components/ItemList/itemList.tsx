@@ -1,38 +1,27 @@
 import React, { useEffect } from "react";
-import { useState } from "react";
-import { ListType } from "../App/App";
 import Spinner from "../Spinner/spinner";
-import {bigError}from '../../services/swapi'
 import "./itemList.css";
+import { useSelector } from "react-redux";
+import { RootStateType } from "../../redux/store";
+import ErrorIndicator from "../ErrorIndicator/error-indicator";
+import { ListType } from "../../redux/reducers/listReducer";
+
 
 type ListPropsType = {
   onChangeItem: (id: number) => void;
-  getData: () => Promise<Array<ListType>>;
+  getData: () => void;
   children: (item: ListType) => React.ReactNode;
 };
 
-const ItemList: React.FC<ListPropsType> = ({
-  onChangeItem,
-  getData,
-  children,
-}) => {
-  const [loading, setLoading] = useState<boolean>(true);
+const ItemList: React.FC<ListPropsType> = ({onChangeItem,getData,children}) => {
+ 
 
-  const [itemList, setItemList] = useState<Array<ListType>>([]);
-
-  const getItemList = () => {
-    getData().then((data: Array<ListType>) => setItemList(data));
-  };
-
-  const isError = () => {
-    if (bigError === true) {
-      throw new Error("An error appeared");
-    }
-  };
-  isError();
+  const itemList = useSelector<RootStateType, Array<ListType>>((state) => state.list.items)
+  const loading = useSelector<RootStateType, boolean>((state)=> state.list.loading)
+  const error = useSelector<RootStateType, boolean>((state) => state.list.error)
+  
   useEffect(() => {
-    getItemList();
-    setLoading(false);
+    getData()
   }, []);
 
   const items = itemList.map((el) => {
@@ -48,9 +37,15 @@ const ItemList: React.FC<ListPropsType> = ({
     );
   });
 
-  let isLoaded = loading ? <Spinner /> : items;
-
-  return <ul className="item-list list-group">{isLoaded}</ul>;
+  let isLoaded = loading && <Spinner /> 
+  return (
+    <ul className="item-list list-group">
+      {error ? (
+        <ErrorIndicator message={"we can get item list for some reasons"} />
+      ): items}
+      {isLoaded}
+    </ul>
+  );
 };
 export default ItemList
 

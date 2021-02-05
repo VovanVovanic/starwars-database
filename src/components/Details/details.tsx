@@ -1,5 +1,5 @@
 import React from 'react'
-import { ListType } from '../App/App';
+import { ListType } from '../../redux/reducers/listReducer';
 
 type fieldType =
   | "length"
